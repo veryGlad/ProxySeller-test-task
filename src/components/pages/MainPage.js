@@ -1,23 +1,46 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Grid, TextField} from "@mui/material";
+import {Box, Button, Grid, NativeSelect, TextField} from "@mui/material";
 import UserCard from "../UserCard";
 import axios from "../../axios/axios";
-import Select from "../Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+
+const sortOptions = {
+    ASC: "A-Z",
+    DESC: "Z-A"
+}
 
 const MainPage = () => {
     const [searchValue, setSearchValue] = useState("")
+    const [sorting, setSorting] = React.useState(sortOptions.ASC);
+    const [users, setUsers] = useState([])
+    const [usersToDisplay, setUsersToDisplay] = useState([])
+
     const updateSearchValue = ((value) => {
         setSearchValue(value.target.value)
     })
-
-    const [users, setUsers] = useState([])
 
     useEffect(() => {
         axios.get(`/users`).then((resp) => setUsers(resp.data))
     }, [])
 
+    const handleChange = (event) => {
+        setSorting(event.target.value);
+    };
 
-    users.sort((a, b) => a.name > b.name ? 1 : -1);
+    const getSortedUsers = (users) => {
+        if (sorting === sortOptions.ASC) {
+            return users.sort((a, b) => a.name > b.name ? 1 : -1)
+        } else {
+            return users.sort((a, b) => a.name < b.name ? 1 : -1)
+        }
+    }
+
+    useEffect(() => {
+        const sortedUsers = getSortedUsers(users)
+        setUsersToDisplay(sortedUsers.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase())))
+    }, [searchValue, users, sorting])
+
 
     return (
         <div>
@@ -26,7 +49,6 @@ const MainPage = () => {
                 <Box width={"100%"} maxWidth={"1200px"}>
                     <Box width={"100%"} height={"55px"} marginTop={2} marginBottom={1} display={"flex"}
                          justifyContent={"space-between"}>
-                        <Box width={"100%"} maxWidth={"1085px"} height={"100%"}>
                             <TextField
                                 fullWidth
                                 required
@@ -34,15 +56,30 @@ const MainPage = () => {
                                 label="Search user"
                                 onChange={updateSearchValue}
                             />
-                        </Box>
-                        <Button variant="contained" size={"large"}>Search</Button>
                     </Box>
-                    <Box width={"100%"} display={"flex"} justifyContent={"flex-start"} marginBottom={4} marginLeft={-1}>
-                        <Select title={"sort"} value1={"A-Z"} value2={"Z-A"}></Select>
+                    <Box width={"100%"} display={"flex"} justifyContent={"flex-start"} marginBottom={4}>
+                        <Box sx={{ minWidth: 120 }}>
+                            <FormControl fullWidth>
+                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                    Sort
+                                </InputLabel>
+                                <NativeSelect
+                                    value={sorting}
+                                    inputProps={{
+                                        name: 'sort',
+                                        id: 'uncontrolled-native',
+                                    }}
+                                    onChange={handleChange}
+                                >
+                                    <option value={sortOptions.ASC}>{sortOptions.ASC}</option>
+                                    <option value={sortOptions.DESC}>{sortOptions.DESC}</option>
+                                </NativeSelect>
+                            </FormControl>
+                        </Box>
                     </Box>
 
                     <Grid container spacing={{xs: 2, md: 10}} columns={{xs: 4, sm: 8, md: 12}}>
-                        {users.map((user) => {
+                        {usersToDisplay.map((user) => {
                             return <Grid item xs={4} key={user.id}>
                                 <UserCard userName={user.name} userId={user.id}></UserCard>
                             </Grid>

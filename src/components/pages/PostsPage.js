@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import ContntCard from "../ContntCard";
+import ContentCard from "../ContentCard";
 import {useParams} from "react-router-dom";
 import {Box} from "@mui/material";
 import axios from "../../axios/axios";
@@ -18,7 +18,7 @@ const PostsPage = () => {
             <Box width={"100%"} maxWidth={"1200px"} marginTop={5}>
                 User posts
                 {posts.map((post) => {
-                    return <Box margin={2} key={post.id}><ContntCard body={post.body} title={post.title}/></Box>
+                    return <Box margin={2} key={post.id}><ContentCard body={post.body} title={post.title}/></Box>
                 })}
             </Box>
         </Box>

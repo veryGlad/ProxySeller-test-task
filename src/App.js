@@ -1,11 +1,10 @@
 import './App.css';
-import {BrowserRouter, Route, Routes, useParams} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import MainPage from "./components/pages/MainPage";
 import AlbumsPage from "./components/pages/AlbumsPage";
 import PostsPage from "./components/pages/PostsPage";
 
 function App() {
-    let id = useParams()
 
   return (
     <div className="App">

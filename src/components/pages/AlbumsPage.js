@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import ContntCard from "../ContntCard";
+import ContentCard from "../ContentCard";
 import {useParams} from "react-router-dom";
 import {Box} from "@mui/material";
 import axios from "../../axios/axios";
@@ -21,7 +21,9 @@ const PostsPage = () => {
             <Box width={"100%"} maxWidth={"1200px"} marginTop={5}>
                 User albums
                 {albums.map((album) => {
-                    return <Box marginTop={3} key={album.id}><ContntCard title={`Album name: ${album.title}`}/></Box>
+                    return <Box marginTop={3} key={album.id}>
+                        <ContentCard title={`Album name: ${album.title}`}/>
+                    </Box>
                 })}
             </Box>
         </Box>
