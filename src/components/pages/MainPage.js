@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Box, Button, Grid, NativeSelect, TextField} from "@mui/material";
+import React, {useCallback, useEffect, useState} from 'react';
+import {Box, Grid, NativeSelect, TextField} from "@mui/material";
 import UserCard from "../UserCard";
 import axios from "../../axios/axios";
 import FormControl from "@mui/material/FormControl";
@@ -28,18 +28,18 @@ const MainPage = () => {
         setSorting(event.target.value);
     };
 
-    const getSortedUsers = (users) => {
+    const getSortedUsers = useCallback((users) => {
         if (sorting === sortOptions.ASC) {
             return users.sort((a, b) => a.name > b.name ? 1 : -1)
         } else {
             return users.sort((a, b) => a.name < b.name ? 1 : -1)
         }
-    }
+    }, [sorting])
 
     useEffect(() => {
         const sortedUsers = getSortedUsers(users)
         setUsersToDisplay(sortedUsers.filter((user) => user.name.toLowerCase().includes(searchValue.toLowerCase())))
-    }, [searchValue, users, sorting])
+    }, [searchValue, users, sorting, getSortedUsers])
 
 
     return (
